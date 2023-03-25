@@ -8,6 +8,44 @@
 
 #include <command_line.h>
 
+#define SQUARE_SIZE 40
+#define WIDTH 1200
+#define HEIGHT 700
+
+enum { COVERED, UNCOVERED };
+
+class Square {
+public:
+  int state;
+
+  Square();
+  void Initialize();
+};
+
+Square::Square() { this->Initialize(); }
+
+void Square::Initialize() {
+  this->state = COVERED;
+}
+
+class Board {
+public:
+  int width;
+  int height;
+  Square **squares;
+  Board(int width, int height);
+};
+
+Board::Board(int width, int height) {
+  this->width = width;
+  this->height = height;
+
+  this->squares = new Square *[width];
+  for (int i = 0; i < width; i++) {
+    this->squares[i] = new Square[height];
+  }
+}
+
 int main(int argc, char *argv[]) {
   srand(time(0));
 
@@ -24,6 +62,8 @@ int main(int argc, char *argv[]) {
 
   SDL_Renderer *renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+  Board *board = new Board(WIDTH / SQUARE_SIZE, HEIGHT / SQUARE_SIZE);
 
   SDL_Event event;
   bool running = true;

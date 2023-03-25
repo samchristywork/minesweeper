@@ -42,6 +42,8 @@ public:
   int height;
   Square **squares;
   Board(int width, int height);
+  Square *GetCollision(int mx, int my);
+  Square *GetSquare(int x, int y);
   void Reset();
 };
 
@@ -64,6 +66,33 @@ Board::Board(int width, int height) {
   for (int i = 0; i < width; i++) {
     this->squares[i] = new Square[height];
   }
+}
+
+Square *Board::GetCollision(int mx, int my) {
+  for (int x = 0; x < this->width; x++) {
+    for (int y = 0; y < this->height; y++) {
+      SDL_Rect rect;
+      rect.x = x * SQUARE_SIZE;
+      rect.y = y * SQUARE_SIZE;
+      rect.w = SQUARE_SIZE + 1;
+      rect.h = SQUARE_SIZE + 1;
+      if (mx > rect.x && mx < rect.x + rect.w && my > rect.y &&
+          my < rect.y + rect.h) {
+        return &this->squares[x][y];
+      }
+    }
+  }
+
+  return nullptr;
+}
+
+Square *Board::GetSquare(int x, int y) {
+  if (x >= 0 && x < this->width) {
+    if (y >= 0 && y < this->height) {
+      return &this->squares[x][y];
+    }
+  }
+  return nullptr;
 }
 
 void draw_text(SDL_Renderer *renderer, TTF_Font *font, int x, int y,

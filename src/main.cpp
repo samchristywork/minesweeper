@@ -307,6 +307,14 @@ int main(int argc, char *argv[]) {
             int shade = 0x7f;
             SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
             SDL_RenderFillRect(renderer, &rect);
+            if (square->is_flag) {
+              SDL_Rect flag_rect;
+              flag_rect.x = rect.x;
+              flag_rect.y = rect.y;
+              flag_rect.w = SQUARE_SIZE;
+              flag_rect.h = SQUARE_SIZE;
+              SDL_RenderCopy(renderer, flag_texture, NULL, &flag_rect);
+            }
           } else if (square->state == COVERED) {
             int shade = 0xaf;
             SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
@@ -320,6 +328,14 @@ int main(int argc, char *argv[]) {
             shade = 0x7f;
             SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
             SDL_RenderFillRect(renderer, &inside_rect);
+            if (square->is_flag) {
+              SDL_Rect flag_rect;
+              flag_rect.x = rect.x;
+              flag_rect.y = rect.y;
+              flag_rect.w = SQUARE_SIZE;
+              flag_rect.h = SQUARE_SIZE;
+              SDL_RenderCopy(renderer, flag_texture, NULL, &flag_rect);
+            }
           } else if (square->state == UNCOVERED) {
             if (square->random_thing == 0) {
               int shade = 0xff;

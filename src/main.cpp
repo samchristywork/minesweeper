@@ -14,9 +14,14 @@
 
 enum { COVERED, UNCOVERED };
 
+bool rand_bool(float p) { return (float)rand() / (float)RAND_MAX < p; }
+
 class Square {
 public:
   int state;
+  bool is_hover;
+  bool is_mine;
+  bool is_flag;
 
   Square();
   void Initialize();
@@ -26,6 +31,9 @@ Square::Square() { this->Initialize(); }
 
 void Square::Initialize() {
   this->state = COVERED;
+  this->is_hover = false;
+  this->is_mine = rand_bool(0.10);
+  this->is_flag = false;
 }
 
 class Board {
@@ -96,9 +104,16 @@ int main(int argc, char *argv[]) {
 
   Board *board = new Board(WIDTH / SQUARE_SIZE, HEIGHT / SQUARE_SIZE);
 
+  SDL_Texture *flag_texture = IMG_LoadTexture(renderer, "../res/flag.bmp");
+  SDL_Texture *mine_texture = IMG_LoadTexture(renderer, "../res/mine.bmp");
+
   SDL_Event event;
   bool running = true;
   while (running) {
+    int clicked_x = -1;
+    int clicked_y = -1;
+    int clicked_button = -1;
+
     Uint32 begin = SDL_GetTicks();
 
     while (SDL_PollEvent(&event)) {
@@ -108,12 +123,27 @@ int main(int argc, char *argv[]) {
         running = false;
         break;
 
+      case SDL_MOUSEMOTION:
+        mouse_x = event.motion.x;
+        mouse_y = event.motion.y;
+        break;
+
+      case SDL_MOUSEBUTTONDOWN:
+        clicked_x = event.button.x;
+        clicked_y = event.button.y;
+        clicked_button = event.button.button;
+        break;
+
       case SDL_KEYDOWN:
 
         switch (event.key.keysym.sym) {
 
         case SDLK_ESCAPE:
           running = false;
+          break;
+
+        case SDLK_r:
+          board->Reset();
           break;
 
         default:
@@ -131,9 +161,31 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    if (clicked_x != -1) {
+      Square *s = board->GetCollision(clicked_x, clicked_y);
+      if (s) {
+        if (clicked_button == SDL_BUTTON_LEFT) {
+          s->state = UNCOVERED;
+        } else if (clicked_button == SDL_BUTTON_RIGHT) {
+          s->is_flag = !s->is_flag;
+        }
+      }
+    }
+
     int shade = 0x07;
     SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
     SDL_RenderClear(renderer);
+
+    for (int x = 0; x < board->width; x++) {
+      for (int y = 0; y < board->height; y++) {
+        board->squares[x][y].is_hover = false;
+      }
+    }
+
+    Square *s = board->GetCollision(mouse_x, mouse_y);
+    if (s) {
+      s->is_hover = true;
+    }
 
     SDL_RenderPresent(renderer);
   }

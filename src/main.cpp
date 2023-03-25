@@ -46,6 +46,19 @@ Board::Board(int width, int height) {
   }
 }
 
+void draw_text(SDL_Renderer *renderer, TTF_Font *font, int x, int y,
+               SDL_Color color, const char *text) {
+  SDL_Surface *textSurface = TTF_RenderText_Solid(font, text, color);
+  SDL_Texture *textTexture =
+      SDL_CreateTextureFromSurface(renderer, textSurface);
+  SDL_Rect rect = textSurface->clip_rect;
+  rect.x = x - rect.w / 2 + SQUARE_SIZE / 2;
+  rect.y = y - rect.h / 2 + SQUARE_SIZE / 2;
+  SDL_RenderCopy(renderer, textTexture, NULL, &rect);
+  SDL_FreeSurface(textSurface);
+  SDL_DestroyTexture(textTexture);
+}
+
 int main(int argc, char *argv[]) {
   srand(time(0));
 
@@ -55,9 +68,15 @@ int main(int argc, char *argv[]) {
   parse_opts(argc, argv);
 
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+  TTF_Init();
+
+  TTF_Font *font =
+      TTF_OpenFont("../res/LiberationSans-Regular.ttf", SQUARE_SIZE);
+  TTF_Font *small_font =
+      TTF_OpenFont("../res/LiberationSans-Regular.ttf", SQUARE_SIZE / 2);
 
   SDL_Window *window = SDL_CreateWindow("Minesweeper", SDL_WINDOWPOS_UNDEFINED,
-                                        SDL_WINDOWPOS_UNDEFINED, 500, 500,
+                                        SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
                                         SDL_WINDOW_SHOWN);
 
   SDL_Renderer *renderer =

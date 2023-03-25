@@ -267,6 +267,32 @@ int main(int argc, char *argv[]) {
       s->is_hover = true;
     }
 
+    bool finished = false;
+    while (!finished) {
+      finished = true;
+      for (int x = 0; x < board->width; x++) {
+        for (int y = 0; y < board->height; y++) {
+          int num_neighbors = board->GetNumNeighbors(x, y);
+          Square *square = board->GetSquare(x, y);
+          if (square) {
+            if (square->state == UNCOVERED && num_neighbors == 0) {
+              for (int cx = x - 1; cx <= x + 1; cx++) {
+                for (int cy = y - 1; cy <= y + 1; cy++) {
+                  Square *s = board->GetSquare(cx, cy);
+                  if (s) {
+                    if (s->state == COVERED) {
+                      s->state = UNCOVERED;
+                      finished = false;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     SDL_RenderPresent(renderer);
   }
 

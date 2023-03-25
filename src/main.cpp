@@ -34,7 +34,19 @@ public:
   int height;
   Square **squares;
   Board(int width, int height);
+  void Reset();
 };
+
+void Board::Reset() {
+  for (int x = 0; x < this->width; x++) {
+    for (int y = 0; y < this->height; y++) {
+      Square *s = this->GetSquare(x, y);
+      if (s) {
+        s->Initialize();
+      }
+    }
+  }
+}
 
 Board::Board(int width, int height) {
   this->width = width;

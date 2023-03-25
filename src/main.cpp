@@ -293,6 +293,74 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    for (int x = 0; x < board->width; x++) {
+      for (int y = 0; y < board->height; y++) {
+        SDL_Rect rect;
+        rect.x = x * SQUARE_SIZE;
+        rect.y = y * SQUARE_SIZE;
+        rect.w = SQUARE_SIZE - 1;
+        rect.h = SQUARE_SIZE - 1;
+
+        Square *square = board->GetSquare(x, y);
+        if (square) {
+          if (square->is_hover && square->state == COVERED) {
+            int shade = 0x7f;
+            SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
+            SDL_RenderFillRect(renderer, &rect);
+          } else if (square->state == COVERED) {
+            int shade = 0xaf;
+            SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
+            SDL_RenderFillRect(renderer, &rect);
+
+            SDL_Rect inside_rect;
+            inside_rect.x = rect.x + 1;
+            inside_rect.y = rect.y + 1;
+            inside_rect.w = SQUARE_SIZE - 2;
+            inside_rect.h = SQUARE_SIZE - 2;
+            shade = 0x7f;
+            SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
+            SDL_RenderFillRect(renderer, &inside_rect);
+          } else if (square->state == UNCOVERED) {
+            if (square->random_thing == 0) {
+              int shade = 0xff;
+              SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
+              SDL_RenderFillRect(renderer, &rect);
+            } else if (square->random_thing <= 34) {
+              int shade = 0xaf;
+              SDL_SetRenderDrawColor(renderer, 0xff, shade, shade, 0xff);
+              SDL_RenderFillRect(renderer, &rect);
+            } else if (square->random_thing <= 50) {
+              int shade = 0xaf;
+              SDL_SetRenderDrawColor(renderer, 0xff, 0xff, shade, 0xff);
+              SDL_RenderFillRect(renderer, &rect);
+            } else {
+              int shade = 0xaf;
+              SDL_SetRenderDrawColor(renderer, shade, 0xff, shade, 0xff);
+              SDL_RenderFillRect(renderer, &rect);
+            }
+
+            SDL_Color black = {0, 0, 0};
+            if (square->is_mine) {
+              SDL_Rect mine_rect;
+              mine_rect.x = rect.x;
+              mine_rect.y = rect.y;
+              mine_rect.w = SQUARE_SIZE;
+              mine_rect.h = SQUARE_SIZE;
+              SDL_RenderCopy(renderer, mine_texture, NULL, &mine_rect);
+            } else {
+              int num_neighbors = board->GetNumNeighbors(x, y);
+              if (num_neighbors > 0) {
+                char num_neigbors_text[8];
+                sprintf(num_neigbors_text, "%d", num_neighbors);
+                draw_text(renderer, font, rect.x, rect.y, black,
+                          num_neigbors_text);
+              }
+            }
+          }
+        }
+      }
+    }
+
     SDL_RenderPresent(renderer);
   }
 

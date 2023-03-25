@@ -44,6 +44,9 @@ public:
   Board(int width, int height);
   Square *GetCollision(int mx, int my);
   Square *GetSquare(int x, int y);
+  int GetNumNeighbors(int x, int y);
+  int GetNumNeighborsCovered(int x, int y);
+  int GetNumNeighborsFlagged(int x, int y);
   void Reset();
 };
 
@@ -93,6 +96,54 @@ Square *Board::GetSquare(int x, int y) {
     }
   }
   return nullptr;
+}
+
+int Board::GetNumNeighborsCovered(int x, int y) {
+  int n = 0;
+  for (int cx = x - 1; cx <= x + 1; cx++) {
+    for (int cy = y - 1; cy <= y + 1; cy++) {
+      Square *s = this->GetSquare(cx, cy);
+      if (s) {
+        if (s->state == COVERED) {
+          n++;
+        }
+      }
+    }
+  }
+
+  return n;
+}
+
+int Board::GetNumNeighborsFlagged(int x, int y) {
+  int n = 0;
+  for (int cx = x - 1; cx <= x + 1; cx++) {
+    for (int cy = y - 1; cy <= y + 1; cy++) {
+      Square *s = this->GetSquare(cx, cy);
+      if (s) {
+        if (s->is_flag == true) {
+          n++;
+        }
+      }
+    }
+  }
+
+  return n;
+}
+
+int Board::GetNumNeighbors(int x, int y) {
+  int n = 0;
+  for (int cx = x - 1; cx <= x + 1; cx++) {
+    for (int cy = y - 1; cy <= y + 1; cy++) {
+      Square *s = this->GetSquare(cx, cy);
+      if (s) {
+        if (s->is_mine) {
+          n++;
+        }
+      }
+    }
+  }
+
+  return n;
 }
 
 void draw_text(SDL_Renderer *renderer, TTF_Font *font, int x, int y,

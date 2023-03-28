@@ -342,7 +342,7 @@ int main(int argc, char *argv[]) {
           break;
 
         default:
-          printf("Unhandled Key: %d\n", event.key.keysym.sym);
+          // printf("Unhandled Key: %d\n", event.key.keysym.sym);
           break;
         }
         break;
@@ -351,7 +351,7 @@ int main(int argc, char *argv[]) {
         break;
 
       default:
-        printf("Unhandled Event: %d\n", event.type);
+        // printf("Unhandled Event: %d\n", event.type);
         break;
       }
     }

@@ -274,10 +274,9 @@ int main(int argc, char *argv[]) {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   TTF_Init();
 
-  TTF_Font *font =
-      TTF_OpenFont("../res/LiberationSans-Regular.ttf", SQUARE_SIZE);
+  TTF_Font *font = TTF_OpenFont("res/LiberationSans-Regular.ttf", SQUARE_SIZE);
   TTF_Font *small_font =
-      TTF_OpenFont("../res/LiberationSans-Regular.ttf", SQUARE_SIZE / 2);
+      TTF_OpenFont("res/LiberationSans-Regular.ttf", SQUARE_SIZE / 2);
 
   SDL_Window *window = SDL_CreateWindow(
       "Minesweeper", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -288,8 +287,8 @@ int main(int argc, char *argv[]) {
 
   Board *board = new Board(width, height);
 
-  SDL_Texture *flag_texture = IMG_LoadTexture(renderer, "../res/flag.bmp");
-  SDL_Texture *mine_texture = IMG_LoadTexture(renderer, "../res/mine.bmp");
+  SDL_Texture *flag_texture = IMG_LoadTexture(renderer, "res/flag.bmp");
+  SDL_Texture *mine_texture = IMG_LoadTexture(renderer, "res/mine.bmp");
 
   SDL_Event event;
   bool running = true;

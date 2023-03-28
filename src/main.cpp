@@ -9,8 +9,6 @@
 #include <command_line.h>
 
 #define SQUARE_SIZE 40
-#define WIDTH 1200
-#define HEIGHT 700
 
 enum { COVERED, UNCOVERED };
 
@@ -192,7 +190,29 @@ int main(int argc, char *argv[]) {
   int mouse_x = 0;
   int mouse_y = 0;
 
+  add_arg('x', "width", "Board width");
+  add_arg('y', "height", "Board height");
+
   parse_opts(argc, argv);
+
+  int width=0;
+  int height=0;
+
+  if (get_is_set('x')) {
+    width = atoi(get_value('x'));
+  }
+
+  if (get_is_set('y')) {
+    height = atoi(get_value('y'));
+  }
+
+  if(!width){
+    width=30;
+  }
+
+  if(!height){
+    height=15;
+  }
 
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   TTF_Init();
@@ -202,14 +222,14 @@ int main(int argc, char *argv[]) {
   TTF_Font *small_font =
       TTF_OpenFont("../res/LiberationSans-Regular.ttf", SQUARE_SIZE / 2);
 
-  SDL_Window *window = SDL_CreateWindow("Minesweeper", SDL_WINDOWPOS_UNDEFINED,
-                                        SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
-                                        SDL_WINDOW_SHOWN);
+  SDL_Window *window = SDL_CreateWindow(
+      "Minesweeper", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+      width * SQUARE_SIZE, height * SQUARE_SIZE, SDL_WINDOW_SHOWN);
 
   SDL_Renderer *renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-  Board *board = new Board(WIDTH / SQUARE_SIZE, HEIGHT / SQUARE_SIZE);
+  Board *board = new Board(width, height);
 
   SDL_Texture *flag_texture = IMG_LoadTexture(renderer, "../res/flag.bmp");
   SDL_Texture *mine_texture = IMG_LoadTexture(renderer, "../res/mine.bmp");

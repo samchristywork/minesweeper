@@ -47,6 +47,7 @@ public:
   int GetNumNeighborsFlagged(int x, int y);
   void Reset();
   void AutoFlag();
+  void AutoComplete();
 };
 
 void Board::AutoFlag() {
@@ -64,6 +65,38 @@ void Board::AutoFlag() {
                 if (s) {
                   if (s->state == COVERED) {
                     s->is_flag = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+void Board::AutoComplete() {
+  bool finished = false;
+  while (!finished) {
+    finished = true;
+    this->AutoFlag();
+    for (int x = 0; x < this->width; x++) {
+      for (int y = 0; y < this->height; y++) {
+        Square *s = this->GetSquare(x, y);
+        if (s) {
+          if (s->state == UNCOVERED) {
+            int num_neighbors = this->GetNumNeighbors(x, y);
+            int num_neighbors_flagged = this->GetNumNeighborsFlagged(x, y);
+            if (num_neighbors == num_neighbors_flagged) {
+              for (int cx = x - 1; cx <= x + 1; cx++) {
+                for (int cy = y - 1; cy <= y + 1; cy++) {
+                  Square *s = this->GetSquare(cx, cy);
+                  if (s) {
+                    if (s->state == COVERED && s->is_flag == false) {
+                      s->state = UNCOVERED;
+                      finished = false;
+                    }
                   }
                 }
               }

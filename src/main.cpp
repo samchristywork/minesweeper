@@ -20,6 +20,7 @@ public:
   bool is_hover;
   bool is_mine;
   bool is_flag;
+  int success_probability;
 
   Square();
   void Initialize();
@@ -32,6 +33,7 @@ void Square::Initialize() {
   this->is_hover = false;
   this->is_mine = rand_bool(0.10);
   this->is_flag = false;
+  this->success_probability = 0;
 }
 
 class Board {
@@ -48,6 +50,7 @@ public:
   void Reset();
   void AutoFlag();
   void AutoComplete();
+  void MarkProbability();
 };
 
 void Board::AutoFlag() {
@@ -70,6 +73,26 @@ void Board::AutoFlag() {
               }
             }
           }
+        }
+      }
+    }
+  }
+}
+
+void Board::MarkProbability() {
+  for (int x = 0; x < this->width; x++) {
+    for (int y = 0; y < this->height; y++) {
+      Square *s = this->GetSquare(x, y);
+      if (s) {
+        s->success_probability = 0;
+        int num_neighbors = this->GetNumNeighbors(x, y);
+        int num_neighbors_flagged = this->GetNumNeighborsFlagged(x, y);
+        int num_neighbors_covered = this->GetNumNeighborsCovered(x, y);
+        if (s->state == UNCOVERED && num_neighbors != 0 &&
+            num_neighbors_flagged != num_neighbors_covered) {
+          int choices = num_neighbors_covered - num_neighbors_flagged;
+          int dangerous = num_neighbors - num_neighbors_flagged;
+          s->success_probability = 100 - 100 * dangerous / choices;
         }
       }
     }
@@ -106,6 +129,7 @@ void Board::AutoComplete() {
       }
     }
   }
+  this->MarkProbability();
 }
 
 void Board::Reset() {
@@ -417,15 +441,15 @@ int main(int argc, char *argv[]) {
               SDL_RenderCopy(renderer, flag_texture, NULL, &flag_rect);
             }
           } else if (square->state == UNCOVERED) {
-            if (square->random_thing == 0) {
+            if (square->success_probability == 0) {
               int shade = 0xff;
               SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
               SDL_RenderFillRect(renderer, &rect);
-            } else if (square->random_thing <= 34) {
+            } else if (square->success_probability <= 34) {
               int shade = 0xaf;
               SDL_SetRenderDrawColor(renderer, 0xff, shade, shade, 0xff);
               SDL_RenderFillRect(renderer, &rect);
-            } else if (square->random_thing <= 50) {
+            } else if (square->success_probability <= 50) {
               int shade = 0xaf;
               SDL_SetRenderDrawColor(renderer, 0xff, 0xff, shade, 0xff);
               SDL_RenderFillRect(renderer, &rect);

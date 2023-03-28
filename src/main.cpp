@@ -329,6 +329,18 @@ int main(int argc, char *argv[]) {
           board->Reset();
           break;
 
+        case SDLK_f:
+          board->AutoFlag();
+          break;
+
+        case SDLK_h:
+          board->MarkProbability();
+          break;
+
+        case SDLK_c:
+          board->AutoComplete();
+          break;
+
         default:
           printf("Unhandled Key: %d\n", event.key.keysym.sym);
           break;

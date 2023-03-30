@@ -51,7 +51,42 @@ public:
   void AutoFlag();
   void AutoComplete();
   void MarkProbability();
+  void SeedRandomMine();
 };
+
+void Board::SeedRandomMine() {
+  int num_unmined_squares = 0;
+
+  for (int x = 0; x < this->width; x++) {
+    for (int y = 0; y < this->height; y++) {
+      if (!this->GetSquare(x, y)->is_mine) {
+        num_unmined_squares++;
+      }
+    }
+  }
+
+  if (num_unmined_squares == 0) {
+    return;
+  }
+
+  int choice = random() % num_unmined_squares;
+
+  int counter = 0;
+  for (int x = 0; x < this->width; x++) {
+    for (int y = 0; y < this->height; y++) {
+      if (!this->GetSquare(x, y)->is_mine) {
+        if (counter == choice) {
+          this->GetSquare(x, y)->is_mine = true;
+          static int nm = 0;
+          nm++;
+          printf("Mined %d\n", nm);
+          return;
+        }
+        counter++;
+      }
+    }
+  }
+}
 
 void Board::AutoFlag() {
   for (int x = 0; x < this->width; x++) {

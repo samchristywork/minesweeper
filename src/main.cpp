@@ -31,7 +31,7 @@ Square::Square() { this->Initialize(); }
 void Square::Initialize() {
   this->state = COVERED;
   this->is_hover = false;
-  this->is_mine = rand_bool(0.10);
+  this->is_mine = false;
   this->is_flag = false;
   this->success_probability = 0;
 }

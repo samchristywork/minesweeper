@@ -41,7 +41,7 @@ public:
   int width;
   int height;
   Square **squares;
-  Board(int width, int height);
+  Board(int width, int height, int num_mines);
   Square *GetCollision(int mx, int my);
   Square *GetSquare(int x, int y);
   int GetNumNeighbors(int x, int y);
@@ -178,13 +178,17 @@ void Board::Reset() {
   }
 }
 
-Board::Board(int width, int height) {
+Board::Board(int width, int height, int num_mines) {
   this->width = width;
   this->height = height;
 
   this->squares = new Square *[width];
   for (int i = 0; i < width; i++) {
     this->squares[i] = new Square[height];
+  }
+
+  for (int i = 0; i < num_mines; i++) {
+    this->SeedRandomMine();
   }
 }
 
@@ -282,13 +286,15 @@ int main(int argc, char *argv[]) {
   int mouse_x = 0;
   int mouse_y = 0;
 
+  add_arg('n', "num-mines", "Number of mines");
   add_arg('x', "width", "Board width");
   add_arg('y', "height", "Board height");
 
   parse_opts(argc, argv);
 
-  int width=0;
-  int height=0;
+  int width = 0;
+  int height = 0;
+  int num_mines = 0;
 
   if (get_is_set('x')) {
     width = atoi(get_value('x'));
@@ -320,7 +326,7 @@ int main(int argc, char *argv[]) {
   SDL_Renderer *renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-  Board *board = new Board(width, height);
+  Board *board = new Board(width, height, num_mines);
 
   SDL_Texture *flag_texture = IMG_LoadTexture(renderer, "res/flag.bmp");
   SDL_Texture *mine_texture = IMG_LoadTexture(renderer, "res/mine.bmp");

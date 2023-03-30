@@ -49,10 +49,12 @@ char *get_value(char short_name) {
   int idx = short_name - 'a';
 
   if (idx >= 0 && idx < 26) {
-    return g_arguments[idx].value;
+    if (g_arguments[idx].value) {
+      return g_arguments[idx].value;
+    }
   }
 
-  return NULL;
+  return (char *)malloc(0);
 }
 
 void usage() {

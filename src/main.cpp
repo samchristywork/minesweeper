@@ -304,12 +304,20 @@ int main(int argc, char *argv[]) {
     height = atoi(get_value('y'));
   }
 
-  if(!width){
-    width=30;
+  if (get_is_set('n')) {
+    num_mines = atoi(get_value('n'));
   }
 
-  if(!height){
-    height=15;
+  if (!width) {
+    width = 30;
+  }
+
+  if (!height) {
+    height = 15;
+  }
+
+  if (!num_mines) {
+    num_mines = 15;
   }
 
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);

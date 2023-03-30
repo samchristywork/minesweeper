@@ -85,10 +85,12 @@ void parse_opts(int argc, char *argv[]) {
         // Short opts
         if (argv[i][1] != '-') {
           for (int j = 1; j < strlen(argv[i]); j++) {
-            last_arg = argv[i][j] - 'a';
-            g_arguments[last_arg].set = 1;
-            if (g_arguments[last_arg].function) {
-              g_arguments[last_arg].function();
+            if (argv[i][j] >= 'a' && argv[i][j] <= 'z') {
+              last_arg = argv[i][j] - 'a';
+              g_arguments[last_arg].set = 1;
+              if (g_arguments[last_arg].function) {
+                g_arguments[last_arg].function();
+              }
             }
           }
 

@@ -8,6 +8,10 @@
 
 #include <command_line.h>
 
+#define FLAG_PATH "res/flag.bmp"
+#define FONT_PATH "res/LiberationSans-Regular.ttf"
+#define MINE_PATH "res/mine.bmp"
+#define SMALL_FONT_PATH "res/LiberationSans-Regular.ttf"
 #define SQUARE_SIZE 40
 
 enum { COVERED, UNCOVERED };
@@ -322,9 +326,8 @@ int main(int argc, char *argv[]) {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   TTF_Init();
 
-  TTF_Font *font = TTF_OpenFont("res/LiberationSans-Regular.ttf", SQUARE_SIZE);
-  TTF_Font *small_font =
-      TTF_OpenFont("res/LiberationSans-Regular.ttf", SQUARE_SIZE / 2);
+  TTF_Font *font = TTF_OpenFont(FONT_PATH, SQUARE_SIZE);
+  TTF_Font *small_font = TTF_OpenFont(SMALL_FONT_PATH, SQUARE_SIZE / 2);
 
   SDL_Window *window = SDL_CreateWindow(
       "Minesweeper", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -335,8 +338,9 @@ int main(int argc, char *argv[]) {
 
   Board *board = new Board(width, height, num_mines);
 
-  SDL_Texture *flag_texture = IMG_LoadTexture(renderer, "res/flag.bmp");
-  SDL_Texture *mine_texture = IMG_LoadTexture(renderer, "res/mine.bmp");
+  SDL_Texture *flag_texture = IMG_LoadTexture(renderer, FLAG_PATH);
+  SDL_Texture *mine_texture = IMG_LoadTexture(renderer, MINE_PATH);
+
 
   SDL_Event event;
   bool running = true;

@@ -345,6 +345,22 @@ int main(int argc, char *argv[]) {
   SDL_Texture *flag_texture = IMG_LoadTexture(renderer, FLAG_PATH);
   SDL_Texture *mine_texture = IMG_LoadTexture(renderer, MINE_PATH);
 
+  if (!font) {
+    fprintf(stderr, "Resource: \"%s\" could not be loaded...\n", FONT_PATH);
+  }
+
+  if (!small_font) {
+    fprintf(stderr, "Resource: \"%s\" could not be loaded...\n",
+            SMALL_FONT_PATH);
+  }
+
+  if (!flag_texture) {
+    fprintf(stderr, "Resource: \"%s\" could not be loaded...\n", FLAG_PATH);
+  }
+
+  if (!mine_texture) {
+    fprintf(stderr, "Resource: \"%s\" could not be loaded...\n", MINE_PATH);
+  }
 
   SDL_Event event;
   bool running = true;

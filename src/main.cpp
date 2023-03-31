@@ -272,6 +272,10 @@ int Board::GetNumNeighbors(int x, int y) {
 
 void draw_text(SDL_Renderer *renderer, TTF_Font *font, int x, int y,
                SDL_Color color, const char *text) {
+  if (!font) {
+    return;
+  }
+
   SDL_Surface *textSurface = TTF_RenderText_Solid(font, text, color);
   SDL_Texture *textTexture =
       SDL_CreateTextureFromSurface(renderer, textSurface);
@@ -474,7 +478,7 @@ int main(int argc, char *argv[]) {
             int shade = 0x7f;
             SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
             SDL_RenderFillRect(renderer, &rect);
-            if (square->is_flag) {
+            if (square->is_flag && flag_texture) {
               SDL_Rect flag_rect;
               flag_rect.x = rect.x;
               flag_rect.y = rect.y;
@@ -495,7 +499,7 @@ int main(int argc, char *argv[]) {
             shade = 0x7f;
             SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
             SDL_RenderFillRect(renderer, &inside_rect);
-            if (square->is_flag) {
+            if (square->is_flag && flag_texture) {
               SDL_Rect flag_rect;
               flag_rect.x = rect.x;
               flag_rect.y = rect.y;
@@ -523,7 +527,7 @@ int main(int argc, char *argv[]) {
             }
 
             SDL_Color black = {0, 0, 0};
-            if (square->is_mine) {
+            if (square->is_mine && mine_texture) {
               SDL_Rect mine_rect;
               mine_rect.x = rect.x;
               mine_rect.y = rect.y;
@@ -532,7 +536,7 @@ int main(int argc, char *argv[]) {
               SDL_RenderCopy(renderer, mine_texture, NULL, &mine_rect);
             } else {
               int num_neighbors = board->GetNumNeighbors(x, y);
-              if (num_neighbors > 0) {
+              if (num_neighbors > 0 && font) {
                 char num_neigbors_text[8];
                 sprintf(num_neigbors_text, "%d", num_neighbors);
                 draw_text(renderer, font, rect.x, rect.y, black,

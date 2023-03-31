@@ -79,7 +79,6 @@ void Board::SeedRandomMine() {
           this->GetSquare(x, y)->is_mine = true;
           static int nm = 0;
           nm++;
-          printf("Mined %d\n", nm);
           return;
         }
         counter++;

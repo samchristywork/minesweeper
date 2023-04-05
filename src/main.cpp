@@ -7,6 +7,7 @@
 #include <time.h>
 
 #include <command_line.h>
+#include <render.h>
 
 #define FLAG_PATH "res/flag.bmp"
 #define FONT_PATH "res/LiberationSans-Regular.ttf"
@@ -44,8 +45,11 @@ class Board {
 public:
   int width;
   int height;
+  int num_mines;
   Square **squares;
+
   Board(int width, int height, int num_mines);
+
   Square *GetCollision(int mx, int my);
   Square *GetSquare(int x, int y);
   int GetNumNeighbors(int x, int y);
@@ -398,15 +402,89 @@ void render(SDL_Renderer *renderer, Board *board, int mouse_x, int mouse_y,
     }
   }
 
-  SDL_Surface *textSurface = TTF_RenderText_Solid(font, text, color);
-  SDL_Texture *textTexture =
-      SDL_CreateTextureFromSurface(renderer, textSurface);
-  SDL_Rect rect = textSurface->clip_rect;
-  rect.x = x - rect.w / 2 + SQUARE_SIZE / 2;
-  rect.y = y - rect.h / 2 + SQUARE_SIZE / 2;
-  SDL_RenderCopy(renderer, textTexture, NULL, &rect);
-  SDL_FreeSurface(textSurface);
-  SDL_DestroyTexture(textTexture);
+  SDL_RenderPresent(renderer);
+}
+
+bool event_loop(Board *board, int *mouse_x, int *mouse_y) {
+  static SDL_Event event;
+
+  bool running = true;
+
+  int clicked_x = -1;
+  int clicked_y = -1;
+  int clicked_button = -1;
+
+  Uint32 begin = SDL_GetTicks();
+
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+
+    case SDL_QUIT:
+      running = false;
+      break;
+
+    case SDL_MOUSEMOTION:
+      *mouse_x = event.motion.x;
+      *mouse_y = event.motion.y;
+      break;
+
+    case SDL_MOUSEBUTTONDOWN:
+      clicked_x = event.button.x;
+      clicked_y = event.button.y;
+      clicked_button = event.button.button;
+      break;
+
+    case SDL_KEYDOWN:
+
+      switch (event.key.keysym.sym) {
+
+      case SDLK_ESCAPE:
+        running = false;
+        break;
+
+      case SDLK_r:
+        board->Reset();
+        break;
+
+      case SDLK_f:
+        board->AutoFlag();
+        break;
+
+      case SDLK_h:
+        board->MarkProbability();
+        break;
+
+      case SDLK_c:
+        board->AutoComplete();
+        break;
+
+      default:
+        // printf("Unhandled Key: %d\n", event.key.keysym.sym);
+        break;
+      }
+      break;
+
+    case SDL_POLLSENTINEL:
+      break;
+
+    default:
+      // printf("Unhandled Event: %d\n", event.type);
+      break;
+    }
+  }
+
+  if (clicked_x != -1) {
+    Square *s = board->GetCollision(clicked_x, clicked_y);
+    if (s) {
+      if (clicked_button == SDL_BUTTON_LEFT) {
+        s->state = UNCOVERED;
+      } else if (clicked_button == SDL_BUTTON_RIGHT) {
+        s->is_flag = !s->is_flag;
+      }
+    }
+  }
+
+  return running;
 }
 
 int main(int argc, char *argv[]) {
@@ -487,83 +565,7 @@ int main(int argc, char *argv[]) {
   SDL_Event event;
   bool running = true;
   while (running) {
-    int clicked_x = -1;
-    int clicked_y = -1;
-    int clicked_button = -1;
-
-    Uint32 begin = SDL_GetTicks();
-
-    while (SDL_PollEvent(&event)) {
-      switch (event.type) {
-
-      case SDL_QUIT:
-        running = false;
-        break;
-
-      case SDL_MOUSEMOTION:
-        mouse_x = event.motion.x;
-        mouse_y = event.motion.y;
-        break;
-
-      case SDL_MOUSEBUTTONDOWN:
-        clicked_x = event.button.x;
-        clicked_y = event.button.y;
-        clicked_button = event.button.button;
-        break;
-
-      case SDL_KEYDOWN:
-
-        switch (event.key.keysym.sym) {
-
-        case SDLK_ESCAPE:
-          running = false;
-          break;
-
-        case SDLK_r:
-          board->Reset();
-          break;
-
-        case SDLK_f:
-          board->AutoFlag();
-          break;
-
-        case SDLK_h:
-          board->MarkProbability();
-          break;
-
-        case SDLK_c:
-          board->AutoComplete();
-          break;
-
-        default:
-          // printf("Unhandled Key: %d\n", event.key.keysym.sym);
-          break;
-        }
-        break;
-
-      case SDL_POLLSENTINEL:
-        break;
-
-      default:
-        // printf("Unhandled Event: %d\n", event.type);
-        break;
-      }
-    }
-
-    if (clicked_x != -1) {
-      Square *s = board->GetCollision(clicked_x, clicked_y);
-      if (s) {
-        if (clicked_button == SDL_BUTTON_LEFT) {
-          s->state = UNCOVERED;
-        } else if (clicked_button == SDL_BUTTON_RIGHT) {
-          s->is_flag = !s->is_flag;
-        }
-      }
-    }
-
-    int shade = 0x07;
-    SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
-    SDL_RenderClear(renderer);
+    running = event_loop(board, &mouse_x, &mouse_y);
 
     for (int x = 0; x < board->width; x++) {
       for (int y = 0; y < board->height; y++) {

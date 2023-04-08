@@ -183,6 +183,10 @@ void Board::Reset() {
       }
     }
   }
+
+  for (int i = 0; i < this->num_mines; i++) {
+    this->SeedRandomMine();
+  }
 }
 
 Board::Board(int width, int height, int num_mines) {
@@ -194,9 +198,7 @@ Board::Board(int width, int height, int num_mines) {
     this->squares[i] = new Square[height];
   }
 
-  for (int i = 0; i < num_mines; i++) {
-    this->SeedRandomMine();
-  }
+  this->Reset();
 }
 
 Square *Board::GetCollision(int mx, int my) {

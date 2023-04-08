@@ -192,6 +192,7 @@ void Board::Reset() {
 Board::Board(int width, int height, int num_mines) {
   this->width = width;
   this->height = height;
+  this->num_mines = num_mines;
 
   this->squares = new Square *[width];
   for (int i = 0; i < width; i++) {
@@ -564,51 +565,25 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "Resource: \"%s\" could not be loaded...\n", MINE_PATH);
   }
 
-  SDL_Event event;
   bool running = true;
   while (running) {
     running = event_loop(board, &mouse_x, &mouse_y);
 
+    bool game_complete = true;
     for (int x = 0; x < board->width; x++) {
       for (int y = 0; y < board->height; y++) {
-        board->squares[x][y].is_hover = false;
-      }
-    }
-
-    Square *s = board->GetCollision(mouse_x, mouse_y);
-    if (s) {
-      s->is_hover = true;
-    }
-
-    bool finished = false;
-    while (!finished) {
-      finished = true;
-      for (int x = 0; x < board->width; x++) {
-        for (int y = 0; y < board->height; y++) {
-          int num_neighbors = board->GetNumNeighbors(x, y);
-          Square *square = board->GetSquare(x, y);
-          if (square) {
-            if (square->state == UNCOVERED && num_neighbors == 0) {
-              for (int cx = x - 1; cx <= x + 1; cx++) {
-                for (int cy = y - 1; cy <= y + 1; cy++) {
-                  Square *s = board->GetSquare(cx, cy);
-                  if (s) {
-                    if (s->state == COVERED) {
-                      s->state = UNCOVERED;
-                      finished = false;
-                    }
-                  }
-                }
-              }
-            }
-          }
+        Square *s = board->GetSquare(x, y);
+        if (!s->is_mine && s->state == COVERED) {
+          game_complete = false;
         }
       }
     }
 
+    if (game_complete) {
+      board->AutoFlag();
     }
 
-    SDL_RenderPresent(renderer);
+    render(renderer, board, mouse_x, mouse_y, font, flag_texture, mine_texture);
   }
 
   SDL_DestroyRenderer(renderer);

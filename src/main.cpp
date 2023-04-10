@@ -15,21 +15,7 @@
 #define SMALL_FONT_PATH "res/LiberationSans-Regular.ttf"
 #define SQUARE_SIZE 40
 
-enum { COVERED, UNCOVERED };
-
 bool rand_bool(float p) { return (float)rand() / (float)RAND_MAX < p; }
-
-class Square {
-public:
-  int state;
-  bool is_hover;
-  bool is_mine;
-  bool is_flag;
-  int success_probability;
-
-  Square();
-  void Initialize();
-};
 
 Square::Square() { this->Initialize(); }
 
@@ -40,27 +26,6 @@ void Square::Initialize() {
   this->is_flag = false;
   this->success_probability = 0;
 }
-
-class Board {
-public:
-  int width;
-  int height;
-  int num_mines;
-  Square **squares;
-
-  Board(int width, int height, int num_mines);
-
-  Square *GetCollision(int mx, int my);
-  Square *GetSquare(int x, int y);
-  int GetNumNeighbors(int x, int y);
-  int GetNumNeighborsCovered(int x, int y);
-  int GetNumNeighborsFlagged(int x, int y);
-  void Reset();
-  void AutoFlag();
-  void AutoComplete();
-  void MarkProbability();
-  void SeedRandomMine();
-};
 
 void Board::SeedRandomMine() {
   int num_unmined_squares = 0;

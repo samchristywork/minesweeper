@@ -4,6 +4,18 @@
 
 ## Screenshots
 
+<p align="center">
+  <img src="./screenshots/image_0.png" />
+</p>
+
+<p align="center">
+  <img src="./screenshots/image_1.png" />
+</p>
+
+<p align="center">
+  <img src="./screenshots/image_2.png" />
+</p>
+
 ## Features
 
 ## Usage

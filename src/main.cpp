@@ -421,7 +421,7 @@ int main(int argc, char *argv[]) {
       board->AutoFlag();
     }
 
-    render(renderer, board, mouse_x, mouse_y, font, flag_texture, mine_texture);
+    render(renderer, board, mouse_x, mouse_y, font, flag_texture, mine_texture, SQUARE_SIZE);
   }
 
   SDL_DestroyRenderer(renderer);

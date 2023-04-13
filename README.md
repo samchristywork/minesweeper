@@ -2,6 +2,10 @@
 
 ## Overview
 
+This is a Minesweeper clone written in C++ using the SDL2 library. It includes
+an auto-solving algorithm that not only provides hints for the statistically
+best move, but can also automatically solve the game.
+
 ## Screenshots
 
 <p align="center">

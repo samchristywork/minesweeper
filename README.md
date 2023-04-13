@@ -35,6 +35,24 @@ best move, but can also automatically solve the game.
 
 ## Usage
 
+```
+Usage:
+  -h,--help              Display Usage statement.
+  -n,--num-mines         Number of mines
+  -x,--width             Board width
+  -y,--height            Board height
+```
+
+## Controls
+
+- Left-click on a cell to reveal its contents.
+- Right-click on a cell to mark it as a mine.
+- Press 'h' to get hints for the next best move.
+- Press 'c' to let the auto-solver complete the game for you.
+- Press 'f' to let the auto-solver mark places where there are definately mines.
+- Press 'r' to restart the game with the same settings.
+- Press 'ESC' to quit the game.
+
 ## Dependencies
 
 ```

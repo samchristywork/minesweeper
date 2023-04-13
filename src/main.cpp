@@ -399,6 +399,10 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "Resource: \"%s\" could not be loaded...\n", MINE_PATH);
   }
 
+  int shade = 0x07;
+  SDL_SetRenderDrawColor(renderer, shade, shade, shade, 0xff);
+  SDL_RenderClear(renderer);
+
   bool running = true;
   while (running) {
     running = event_loop(board, &mouse_x, &mouse_y);

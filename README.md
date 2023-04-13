@@ -22,11 +22,29 @@ best move, but can also automatically solve the game.
 
 ## Features
 
+- Classic Minesweeper gameplay
+- Customizable board size and mine count
+- Auto-solving algorithm providing hints and automatic solutions
+- Statistically based move suggestions for when a guess is required
+- Built with C++ and the SDL2 library for cross-platform support
+- Command line argument parsing
+- Built using CMake
+- Image support for mines and flags.
+- Font rendering support.
+- Error handling.
+
 ## Usage
 
 ## Dependencies
 
-## Limitations
+```
+cmake
+g++
+libsdl2-dev
+libsdl2-gfx-dev
+libsdl2-image-dev
+libsdl2-ttf-dev
+```
 
 ## License
 
